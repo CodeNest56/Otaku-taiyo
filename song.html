@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Otaku Taiyo - Songs</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #121212; color: #eee; }
+    .container { max-width: 1000px; margin: 0 auto; padding: 15px; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #333; }
+    .logo { font-size: 24px; font-weight: bold; color: #ff6b6b; }
+    .search { position: relative; width: 40%; }
+    .search input { width: 100%; padding: 8px 15px; border-radius: 20px; border: none; background: #222; color: #eee; }
+    .user-nav { display: flex; align-items: center; gap: 15px; }
+    .user-nav .icon { font-size: 20px; cursor: pointer; color: #ccc; }
+    .main-content { display: flex; margin-top: 20px; }
+    .sidebar { width: 180px; padding-right: 15px; }
+    .menu-item { padding: 10px 8px; margin-bottom: 6px; cursor: pointer; border-radius: 5px; transition: all 0.3s; }
+    .menu-item:hover { background: #222; }
+    .menu-item.active { background: #ff6b6b; color: #fff; }
+    .menu-item i { margin-right: 10px; }
+    .content { flex: 1; }
+    .section-title { margin: 15px 0; padding-bottom: 10px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+    .section-title h2 { font-size: 18px; }
+    .section-title .more { cursor: pointer; color: #ff6b6b; }
+    .song-list { list-style: none; }
+    .song-item { display: flex; align-items: center; padding: 8px; margin-bottom: 5px; border-radius: 5px; background: #222; cursor: pointer; transition: all 0.2s; }
+    .song-item:hover { background: #333; }
+    .song-item img { width: 40px; height: 40px; border-radius: 4px; margin-right: 12px; }
+    .song-info { flex: 1; }
+    .song-title { font-size: 14px; margin-bottom: 3px; }
+    .song-meta { font-size: 12px; color: #999; display: flex; }
+    .song-meta span { margin-right: 10px; }
+    .song-actions { display: flex; gap: 15px; }
+    .song-actions .action { font-size: 14px; cursor: pointer; }
+    .player { position: fixed; bottom: 0; left: 0; right: 0; background: #222; padding: 10px; display: flex; align-items: center; border-top: 1px solid #333; }
+    .player-img { width: 50px; height: 50px; border-radius: 5px; margin-right: 15px; }
+    .player-info { flex: 1; }
+    .player-title { font-size: 14px; }
+    .player-artist { font-size: 12px; color: #999; }
+    .player-controls { display: flex; align-items: center; gap: 15px; }
+    .player-control { font-size: 16px; cursor: pointer; }
+    .player-progress { height: 4px; background: #333; width: 100%; margin: 0 15px; position: relative; }
+    .player-progress-bar { height: 100%; background: #ff6b6b; width: 30%; }
+    .player-time { font-size: 12px; color: #999; margin-left: 15px; }
+    .categories { display: flex; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
+    .category { padding: 6px 12px; background: #222; border-radius: 15px; cursor: pointer; font-size: 13px; white-space: nowrap; transition: all 0.2s; }
+    .category.active { background: #ff6b6b; color: #fff; }
+    .embed-container { margin-top: 20px; background: #222; border-radius: 8px; padding: 15px; height: 200px; }
+    .notification { position: fixed; top: 20px; right: 20px; background: rgba(255, 107, 107, 0.9); padding: 10px 20px; border-radius: 5px; transform: translateX(200%); transition: transform 0.5s; }
+    @media (max-width: 768px) { 
+      .search { width: 60%; }
+      .main-content { flex-direction: column; }
+      .sidebar { width: 100%; margin-bottom: 20px; }
+      .menu-items { display: flex; overflow-x: auto; }
+      .menu-item { flex: 0 0 auto; margin-right: 10px; }
+      .player { flex-wrap: wrap; }
+      .player-progress { order: -1; width: 100%; margin: 0 0 10px 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header>
+      <div class="logo">Otaku Taiyo</div>
+      <div class="search">
+        <input type="text" placeholder="Search songs, artists...">
+      </div>
+      <div class="user-nav">
+        <div class="icon">🔔</div>
+        <div class="icon">👤</div>
+      </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="menu-items">
+          <div class="menu-item"><i>🏠</i> Home</div>
+          <div class="menu-item"><i>📺</i> Anime</div>
+          <div class="menu-item"><i>📚</i> Manga</div>
+          <div class="menu-item active"><i>🎵</i> Music</div>
+          <div class="menu-item"><i>💬</i> Chat</div>
+          <div class="menu-item"><i>❤️</i> Favorites</div>
+          <div class="menu-item"><i>⏱️</i> History</div>
+        </div>
+      </div>
+
+      <!-- Content Area -->
+      <div class="content">
+        <!-- Categories -->
+        <div class="categories">
+          <div class="category active">All</div>
+          <div class="category">Openings</div>
+          <div class="category">Endings</div>
+          <div class="category">OST</div>
+          <div class="category">J-Pop</div>
+          <div class="category">Covers</div>
+          <div class="category">New Releases</div>
+        </div>
+
+        <!-- Top Songs Section -->
+        <div class="section-title">
+          <h2>Top Anime Songs</h2>
+          <span class="more">⋯</span>
+        </div>
+        <ul class="song-list">
+          <li class="song-item">
+            <img src="/api/placeholder/40/40" alt="Song 1">
+            <div class="song-info">
+              <div class="song-title">Unravel</div>
+              <div class="song-meta">
+                <span>Tokyo Ghoul</span>
+                <span>Opening 1</span>
+                <span>3:42</span>
+              </div>
+            </div>
+            <div class="song-actions">
+              <span class="action">▶️</span>
+              <span class="action">❤️</span>
+              <span class="action">⋯</span>
+            </div>
+          </li>
+          <li class="song-item">
+            <img src="/api/placeholder/40/40" alt="Song 2">
+            <div class="song-info">
+              <div class="song-title">Gurenge</div>
+              <div class="song-meta">
+                <span>Demon Slayer</span>
+                <span>Opening 1</span>
+                <span>4:01</span>
+              </div>
+            </div>
+            <div class="song-actions">
+              <span class="action">▶️</span>
+              <span class="action">❤️</span>
+              <span class="action">⋯</span>
+            </div>
+          </li>
+          <li class="song-item">
+            <img src="/api/placeholder/40/40" alt="Song 3">
+            <div class="song-info">
+              <div class="song-title">Blue Bird</div>
+              <div class="song-meta">
+                <span>Naruto Shippuden</span>
+                <span>Opening 3</span>
+                <span>3:36</span>
+              </div>
+            </div>
+            <div class="song-actions">
+              <span class="action">▶️</span>
+              <span class="action">❤️</span>
+              <span class="action">⋯</span>
+            </div>
+          </li>
+          <li class="song-item">
+            <img src="/api/placeholder/40/40" alt="Song 4">
+            <div class="song-info">
+              <div class="song-title">The Rumbling</div>
+              <div class="song-meta">
+                <span>Attack on Titan</span>
+                <span>Opening 7</span>
+                <span>3:52</span>
+              </div>
+            </div>
+            <div class="song-actions">
+              <span class="action">▶️</span>
+              <span class="action">❤️</span>
+              <span class="action">⋯</span>
+            </div>
+          </li>
+          <li class="song-item">
+            <img src="/api/placeholder/40/40" alt="Song 5">
+            <div class="song-info">
+              <div class="song-title">Again</div>
+              <div class="song-meta">
+                <span>Fullmetal Alchemist: Brotherhood</span>
+                <span>Opening 1</span>
+                <span>4:13</span>
+              </div>
+            </div>
+            <div class="song-actions">
+              <span class="action">▶️</span>
+              <span class="action">❤️</span>
+              <span class="action">⋯</span>
+            </div>
+          </li>
+        </ul>
+
+        <!-- New Releases Section -->
+        <div class="section-title">
+          <h2>New Releases</h2>
+          <span class="more">⋯</span>
+        </div>
+        <ul class="song-list">
+          <li class="song-item">
+            <img src="/api/placeholder/40/40" alt="Song 6">
+            <div class="song-info">
+              <div class="song-title">Chainsaw Blood</div>
+              <div class="song-meta">
+                <span>Chainsaw Man</span>
+                <span>Opening 1</span>
+                <span>3:29</span>
+              </div>
+            </div>
+            <div class="song-actions">
+              <span class="action">▶️</span>
+              <span class="action">❤️</span>
+              <span class="action">⋯</span>
+            </div>
+          </li>
+          <li class="song-item">
+            <img src="/api/placeholder/40/40" alt="Song 7">
+            <div class="song-info">
+              <div class="song-title">Kick Back</div>
+              <div class="song-meta">
+                <span>Spy x Family</span>
+                <span>Opening 2</span>
+                <span>3:15</span>
+              </div>
+            </div>
+            <div class="song-actions">
+              <span class="action">▶️</span>
+              <span class="action">❤️</span>
+              <span class="action">⋯</span>
+            </div>
+          </li>
+          <li class="song-item">
+            <img src="/api/placeholder/40/40" alt="Song 8">
+            <div class="song-info">
+              <div class="song-title">Idol</div>
+              <div class="song-meta">
+                <span>Oshi no Ko</span>
+                <span>Opening 1</span>
+                <span>4:05</span>
+              </div>
+            </div>
+            <div class="song-actions">
+              <span class="action">▶️</span>
+              <span class="action">❤️</span>
+              <span class="action">⋯</span>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Embed Section -->
+        <div class="section-title">
+          <h2>Featured Music Video</h2>
+          <span class="more">⋯</span>
+        </div>
+        <div class="embed-container">
+          <!-- Placeholder for embedding content -->
+          <div style="display:flex;justify-content:center;align-items:center;height:100%;color:#666;">
+            <div>
+              <div style="text-align:center;font-size:40px;">▶️</div>
+              <div>External embed will appear here</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Music Player -->
+  <div class="player">
+    <img class="player-img" src="/api/placeholder/50/50" alt="Now Playing">
+    <div class="player-info">
+      <div class="player-title">Unravel</div>
+      <div class="player-artist">Tokyo Ghoul - Opening 1</div>
+    </div>
+    <div class="player-controls">
+      <div class="player-control">⏮️</div>
+      <div class="player-control" id="play-pause">⏸️</div>
+      <div class="player-control">⏭️</div>
+      <div class="player-control">🔄</div>
+    </div>
+    <div class="player-progress">
+      <div class="player-progress-bar"></div>
+    </div>
+    <div class="player-time">1:12 / 3:42</div>
+  </div>
+
+  <div class="notification" id="notification">Now playing: Unravel</div>
+
+  <script>
+    // Minimal JavaScript for functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      // Menu item click handler
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          showNotification(item.textContent.trim() + ' section selected');
+        });
+      });
+
+      // Category click handler
+      document.querySelectorAll('.category').forEach(category => {
+        category.addEventListener('click', () => {
+          document.querySelectorAll('.category').forEach(c => c.classList.remove('active'));
+          category.classList.add('active');
+          showNotification('Category: ' + category.textContent + ' selected');
+        });
+      });
+
+      // Song item click handler
+      document.querySelectorAll('.song-item').forEach(song => {
+        song.addEventListener('click', () => {
+          const title = song.querySelector('.song-title').textContent;
+          const meta = song.querySelector('.song-meta span').textContent;
+          showNotification('Now playing: ' + title + ' - ' + meta);
+          
+          // Update player
+          document.querySelector('.player-title').textContent = title;
+          document.querySelector('.player-artist').textContent = meta;
+        });
+      });
+
+      // Play button click handler
+      document.querySelectorAll('.song-actions .action').forEach(action => {
+        action.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (action.textContent === '▶️') {
+            const songItem = action.closest('.song-item');
+            const title = songItem.querySelector('.song-title').textContent;
+            const meta = songItem.querySelector('.song-meta span').textContent;
+            showNotification('Now playing: ' + title + ' - ' + meta);
+            
+            // Update player
+            document.querySelector('.player-title').textContent = title;
+            document.querySelector('.player-artist').textContent = meta;
+          } else if (action.textContent === '❤️') {
+            const songItem = action.closest('.song-item');
+            const title = songItem.querySelector('.song-title').textContent;
+            showNotification('Added to favorites: ' + title);
+          } else {
+            showNotification('Options menu opened');
+          }
+        });
+      });
+
+      // Play/pause toggle
+      const playPauseBtn = document.getElementById('play-pause');
+      playPauseBtn.addEventListener('click', () => {
+        if (playPauseBtn.textContent === '⏸️') {
+          playPauseBtn.textContent = '▶️';
+          showNotification('Paused');
+        } else {
+          playPauseBtn.textContent = '⏸️';
+          showNotification('Playing');
+        }
+      });
+
+      // More options click handler
+      document.querySelectorAll('.more').forEach(more => {
+        more.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const title = e.target.closest('.section-title').querySelector('h2').textContent;
+          showNotification('More options for ' + title);
+        });
+      });
+
+      // Show notification function
+      function showNotification(message) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.style.transform = 'translateX(0)';
+        setTimeout(() => {
+          notification.style.transform = 'translateX(200%)';
+        }, 3000);
+      }
+
+      // Allow external embeds (simulated)
+      document.querySelector('.embed-container').addEventListener('click', () => {
+        showNotification('Loading external embed...');
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Otaku Taiyo - Manga</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #121212; color: #eee; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 15px; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #333; }
+    .logo { font-size: 24px; font-weight: bold; color: #ff6b6b; cursor: pointer; }
+    .search { position: relative; width: 40%; }
+    .search input { width: 100%; padding: 8px 15px; border-radius: 20px; border: none; background: #222; color: #eee; }
+    .user-nav { display: flex; align-items: center; gap: 15px; }
+    .user-nav .icon { font-size: 20px; cursor: pointer; color: #ccc; }
+    .main-content { display: flex; margin-top: 20px; }
+    .sidebar { width: 200px; padding-right: 15px; }
+    .menu-item { padding: 12px 10px; margin-bottom: 8px; cursor: pointer; border-radius: 5px; transition: all 0.3s; }
+    .menu-item:hover { background: #222; }
+    .menu-item.active { background: #ff6b6b; color: #fff; }
+    .menu-item i { margin-right: 10px; }
+    .content { flex: 1; }
+    .section-title { margin: 15px 0; padding-bottom: 10px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+    .section-title h2 { font-size: 18px; }
+    .section-title .more { cursor: pointer; color: #ff6b6b; }
+    .filter-bar { display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap; }
+    .filter-btn { padding: 5px 12px; background: #222; border: none; color: #ccc; border-radius: 15px; cursor: pointer; font-size: 12px; }
+    .filter-btn.active { background: #ff6b6b; color: #fff; }
+    .sort-dropdown { margin-left: auto; position: relative; }
+    .sort-dropdown select { padding: 5px 10px; background: #222; color: #ccc; border: none; border-radius: 15px; cursor: pointer; }
+    .manga-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; margin-bottom: 20px; }
+    .manga-card { background: #222; border-radius: 8px; overflow: hidden; transition: transform 0.3s; cursor: pointer; }
+    .manga-card:hover { transform: translateY(-5px); }
+    .manga-card img { width: 100%; height: 200px; object-fit: cover; }
+    .manga-card .info { padding: 10px; }
+    .manga-card .title { font-size: 14px; margin-bottom: 5px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .manga-card .meta { font-size: 12px; color: #999; display: flex; justify-content: space-between; }
+    .manga-card .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 5px; }
+    .manga-card .tag { font-size: 10px; padding: 2px 6px; background: #333; border-radius: 10px; }
+    .pagination { display: flex; justify-content: center; margin: 20px 0; gap: 5px; }
+    .page-btn { width: 30px; height: 30px; display: flex; justify-content: center; align-items: center; background: #222; border-radius: 5px; cursor: pointer; }
+    .page-btn.active { background: #ff6b6b; color: #fff; }
+    .embed-viewer { width: 100%; background: #222; border-radius: 8px; padding: 15px; margin-bottom: 20px; display: none; }
+    .embed-viewer .header { display: flex; justify-content: space-between; margin-bottom: 10px; }
+    .embed-viewer .close-btn { background: none; border: none; color: #ccc; cursor: pointer; font-size: 18px; }
+    .embed-frame { width: 100%; height: 500px; background: #181818; border: none; }
+    .featured-manga { margin-bottom: 20px; }
+    .featured-item { display: flex; background: #222; border-radius: 8px; overflow: hidden; margin-bottom: 10px; cursor: pointer; }
+    .featured-item img { width: 80px; height: 120px; object-fit: cover; }
+    .featured-item .info { padding: 10px; flex: 1; }
+    .featured-item .title { font-size: 16px; margin-bottom: 5px; }
+    .featured-item .desc { font-size: 12px; color: #999; }
+    .notification { position: fixed; top: 20px; right: 20px; background: rgba(255, 107, 107, 0.9); padding: 10px 20px; border-radius: 5px; transform: translateX(200%); transition: transform 0.5s; }
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-content { display: none; position: absolute; right: 0; background: #222; border-radius: 5px; min-width: 150px; z-index: 1; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    .dropdown-content a { padding: 10px 15px; display: block; color: #eee; text-decoration: none; }
+    .dropdown-content a:hover { background: #333; }
+    .dropdown:hover .dropdown-content { display: block; }
+    @media (max-width: 768px) { 
+      .search { width: 60%; }
+      .main-content { flex-direction: column; }
+      .sidebar { width: 100%; margin-bottom: 20px; }
+      .menu-items { display: flex; overflow-x: auto; }
+      .menu-item { flex: 0 0 auto; margin-right: 10px; }
+      .manga-grid { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header>
+      <div class="logo" onclick="location.href='dashboard.html'">Otaku Taiyo</div>
+      <div class="search">
+        <input type="text" placeholder="Search manga titles...">
+      </div>
+      <div class="user-nav">
+        <div class="dropdown">
+          <span class="icon">⋯</span>
+          <div class="dropdown-content">
+            <a href="#">Settings</a>
+            <a href="#">Help Center</a>
+            <a href="#">Subscription</a>
+            <a href="#">Log Out</a>
+          </div>
+        </div>
+        <div class="icon">🔔</div>
+        <div class="icon">👤</div>
+      </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="menu-items">
+          <div class="menu-item" onclick="location.href='dashboard.html'"><i>🏠</i> Home</div>
+          <div class="menu-item"><i>📺</i> Anime</div>
+          <div class="menu-item active"><i>📚</i> Manga</div>
+          <div class="menu-item"><i>🎵</i> Music</div>
+          <div class="menu-item"><i>💬</i> Chat</div>
+          <div class="menu-item"><i>❤️</i> Favorites</div>
+          <div class="menu-item"><i>⏱️</i> History</div>
+          <div class="menu-item"><i>⚙️</i> Settings</div>
+        </div>
+      </div>
+
+      <!-- Content Area -->
+      <div class="content">
+        <div class="section-title">
+          <h2>Browse Manga</h2>
+          <span class="more">⋯</span>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+          <button class="filter-btn active">All</button>
+          <button class="filter-btn">Action</button>
+          <button class="filter-btn">Romance</button>
+          <button class="filter-btn">Fantasy</button>
+          <button class="filter-btn">Horror</button>
+          <button class="filter-btn">Comedy</button>
+          <div class="sort-dropdown">
+            <select>
+              <option>Popularity</option>
+              <option>Newest</option>
+              <option>Rating</option>
+              <option>A-Z</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Manga Grid -->
+        <div class="manga-grid">
+          <div class="manga-card" onclick="showEmbed('Chainsaw Man', 'chainsaw-man')">
+            <img src="/api/placeholder/150/200" alt="Chainsaw Man">
+            <div class="info">
+              <div class="title">Chainsaw Man</div>
+              <div class="meta"><span>Ongoing</span><span>⭐ 8.8</span></div>
+              <div class="tags">
+                <span class="tag">Action</span>
+                <span class="tag">Horror</span>
+              </div>
+            </div>
+          </div>
+          <div class="manga-card" onclick="showEmbed('Tokyo Revengers', 'tokyo-revengers')">
+            <img src="/api/placeholder/150/200" alt="Tokyo Revengers">
+            <div class="info">
+              <div class="title">Tokyo Revengers</div>
+              <div class="meta"><span>Ongoing</span><span>⭐ 8.5</span></div>
+              <div class="tags">
+                <span class="tag">Action</span>
+                <span class="tag">Drama</span>
+              </div>
+            </div>
+          </div>
+          <div class="manga-card" onclick="showEmbed('One Punch Man', 'one-punch-man')">
+            <img src="/api/placeholder/150/200" alt="One Punch Man">
+            <div class="info">
+              <div class="title">One Punch Man</div>
+              <div class="meta"><span>Ongoing</span><span>⭐ 8.9</span></div>
+              <div class="tags">
+                <span class="tag">Action</span>
+                <span class="tag">Comedy</span>
+              </div>
+            </div>
+          </div>
+          <div class="manga-card" onclick="showEmbed('Berserk', 'berserk')">
+            <img src="/api/placeholder/150/200" alt="Berserk">
+            <div class="info">
+              <div class="title">Berserk</div>
+              <div class="meta"><span>Ongoing</span><span>⭐ 9.4</span></div>
+              <div class="tags">
+                <span class="tag">Dark Fantasy</span>
+                <span class="tag">Horror</span>
+              </div>
+            </div>
+          </div>
+          <div class="manga-card" onclick="showEmbed('Vinland Saga', 'vinland-saga')">
+            <img src="/api/placeholder/150/200" alt="Vinland Saga">
+            <div class="info">
+              <div class="title">Vinland Saga</div>
+              <div class="meta"><span>Ongoing</span><span>⭐ 8.7</span></div>
+              <div class="tags">
+                <span class="tag">Historical</span>
+                <span class="tag">Adventure</span>
+              </div>
+            </div>
+          </div>
+          <div class="manga-card" onclick="showEmbed('Spy X Family', 'spy-family')">
+            <img src="/api/placeholder/150/200" alt="Spy X Family">
+            <div class="info">
+              <div class="title">Spy X Family</div>
+              <div class="meta"><span>Ongoing</span><span>⭐ 8.6</span></div>
+              <div class="tags">
+                <span class="tag">Comedy</span>
+                <span class="tag">Action</span>
+              </div>
+            </div>
+          </div>
+          <div class="manga-card" onclick="showEmbed('Jujutsu Kaisen', 'jujutsu-kaisen')">
+            <img src="/api/placeholder/150/200" alt="Jujutsu Kaisen">
+            <div class="info">
+              <div class="title">Jujutsu Kaisen</div>
+              <div class="meta"><span>Ongoing</span><span>⭐ 8.8</span></div>
+              <div class="tags">
+                <span class="tag">Action</span>
+                <span class="tag">Supernatural</span>
+              </div>
+            </div>
+          </div>
+          <div class="manga-card" onclick="showEmbed('My Hero Academia', 'my-hero-academia')">
+            <img src="/api/placeholder/150/200" alt="My Hero Academia">
+            <div class="info">
+              <div class="title">My Hero Academia</div>
+              <div class="meta"><span>Ongoing</span><span>⭐ 8.4</span></div>
+              <div class="tags">
+                <span class="tag">Action</span>
+                <span class="tag">Superhero</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Embed Viewer -->
+        <div class="embed-viewer" id="embed-viewer">
+          <div class="header">
+            <h3 id="embed-title">Manga Title</h3>
+            <button class="close-btn" onclick="closeEmbed()">✕</button>
+          </div>
+          <iframe class="embed-frame" id="embed-frame"></iframe>
+        </div>
+
+        <!-- Featured Manga Section -->
+        <div class="featured-manga">
+          <div class="section-title">
+            <h2>Featured Manga</h2>
+            <span class="more">⋯</span>
+          </div>
+          <div class="featured-item" onclick="showEmbed('Attack on Titan', 'attack-on-titan')">
+            <img src="/api/placeholder/80/120" alt="Attack on Titan">
+            <div class="info">
+              <div class="title">Attack on Titan</div>
+              <div class="desc">The story follows Eren Yeager, who vows to exterminate the Titans after a Titan brings about the destruction of his hometown.</div>
+            </div>
+          </div>
+          <div class="featured-item" onclick="showEmbed('Demon Slayer', 'demon-slayer')">
+            <img src="/api/placeholder/80/120" alt="Demon Slayer">
+            <div class="info">
+              <div class="title">Demon Slayer</div>
+              <div class="desc">A boy finds his family slaughtered and his sister turned into a demon. He vows to find a cure for his sister and avenge his family.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+          <div class="page-btn">«</div>
+          <div class="page-btn active">1</div>
+          <div class="page-btn">2</div>
+          <div class="page-btn">3</div>
+          <div class="page-btn">4</div>
+          <div class="page-btn">5</div>
+          <div class="page-btn">»</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notification" id="notification">New content available!</div>
+
+  <script>
+    // Manga page functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      // Menu item click handler
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          showNotification(item.textContent.trim() + ' section selected');
+        });
+      });
+
+      // Filter button click handler
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          showNotification('Filter: ' + btn.textContent + ' applied');
+        });
+      });
+
+      // Sort dropdown change handler
+      document.querySelector('.sort-dropdown select').addEventListener('change', (e) => {
+        showNotification('Sorted by: ' + e.target.value);
+      });
+
+      // Pagination click handler
+      document.querySelectorAll('.page-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          if (btn.textContent !== '«' && btn.textContent !== '»') {
+            document.querySelectorAll('.page-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            showNotification('Page ' + btn.textContent + ' selected');
+          } else {
+            showNotification('Navigating pages');
+          }
+        });
+      });
+
+      // More options click handler
+      document.querySelectorAll('.more').forEach(more => {
+        more.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const title = e.target.closest('.section-title').querySelector('h2').textContent;
+          showNotification('More options for ' + title);
+        });
+      });
+    });
+
+    // Show notification function
+    function showNotification(message) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.style.transform = 'translateX(0)';
+      setTimeout(() => {
+        notification.style.transform = 'translateX(200%)';
+      }, 3000);
+    }
+
+    // Show embed viewer
+    function showEmbed(title, id) {
+      document.getElementById('embed-title').textContent = title;
+      document.getElementById('embed-frame').src = `https://placeholder-embed.com/${id}`;
+      document.getElementById('embed-viewer').style.display = 'block';
+      showNotification(`Reading: ${title}`);
+      window.scrollTo({
+        top: document.getElementById('embed-viewer').offsetTop - 20,
+        behavior: 'smooth'
+      });
+    }
+
+    // Close embed viewer
+    function closeEmbed() {
+      document.getElementById('embed-viewer').style.display = 'none';
+      document.getElementById('embed-frame').src = '';
+      showNotification('Embed viewer closed');
+    }
+  </script>
+</body>
+</html>

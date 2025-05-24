@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Otaku Taiyo - Messaging</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #121212; color: #eee; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 15px; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #333; }
+    .logo { font-size: 24px; font-weight: bold; color: #ff6b6b; }
+    .search { position: relative; width: 40%; }
+    .search input { width: 100%; padding: 8px 15px; border-radius: 20px; border: none; background: #222; color: #eee; }
+    .user-nav { display: flex; align-items: center; gap: 15px; }
+    .user-nav .icon { font-size: 20px; cursor: pointer; color: #ccc; }
+    .main-content { display: flex; margin-top: 20px; gap: 15px; }
+    .sidebar { width: 200px; }
+    .menu-item { padding: 12px 10px; margin-bottom: 8px; cursor: pointer; border-radius: 5px; transition: all 0.3s; }
+    .menu-item:hover { background: #222; }
+    .menu-item.active { background: #ff6b6b; color: #fff; }
+    .menu-item i { margin-right: 10px; }
+    .chat-container { flex: 1; display: flex; background: #1a1a1a; border-radius: 8px; overflow: hidden; height: calc(100vh - 100px); }
+    .contacts-list { width: 250px; background: #222; overflow-y: auto; }
+    .contact-search { padding: 15px; }
+    .contact-search input { width: 100%; padding: 8px 12px; border-radius: 20px; border: none; background: #333; color: #eee; }
+    .contacts-header { padding: 0 15px 10px; display: flex; justify-content: space-between; align-items: center; }
+    .contacts-header h3 { font-size: 16px; }
+    .contacts-options { color: #ff6b6b; cursor: pointer; }
+    .contact-filters { display: flex; padding: 0 15px 15px; gap: 8px; }
+    .filter-button { padding: 5px 10px; background: #333; border-radius: 15px; font-size: 12px; cursor: pointer; }
+    .filter-button.active { background: #ff6b6b; color: #fff; }
+    .contact-item { display: flex; padding: 12px 15px; border-bottom: 1px solid #333; cursor: pointer; }
+    .contact-item:hover { background: #2a2a2a; }
+    .contact-item.active { background: #333; }
+    .contact-avatar { width: 45px; height: 45px; border-radius: 50%; margin-right: 12px; }
+    .contact-info { flex: 1; }
+    .contact-name { font-weight: 500; margin-bottom: 3px; display: flex; justify-content: space-between; }
+    .contact-time { font-size: 11px; color: #999; }
+    .contact-last-msg { font-size: 12px; color: #aaa; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .contact-badge { background: #ff6b6b; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; display: flex; justify-content: center; align-items: center; margin-left: 5px; }
+    .chat-area { flex: 1; display: flex; flex-direction: column; }
+    .chat-header { padding: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #333; }
+    .chat-user { display: flex; align-items: center; }
+    .chat-user img { width: 40px; height: 40px; border-radius: 50%; margin-right: 10px; }
+    .chat-user-info h4 { font-size: 16px; }
+    .chat-user-info p { font-size: 12px; color: #aaa; }
+    .chat-actions { display: flex; gap: 15px; }
+    .chat-actions .icon { cursor: pointer; color: #ccc; }
+    .chat-messages { flex: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+    .message { max-width: 70%; padding: 10px 15px; border-radius: 15px; position: relative; }
+    .message.received { background: #333; align-self: flex-start; border-bottom-left-radius: 5px; }
+    .message.sent { background: #0084ff; color: white; align-self: flex-end; border-bottom-right-radius: 5px; }
+    .message-text { font-size: 14px; margin-bottom: 5px; }
+    .message-time { font-size: 10px; text-align: right; opacity: 0.7; }
+    .embed-content { margin-top: 10px; background: rgba(0,0,0,0.2); border-radius: 8px; overflow: hidden; }
+    .embed-content img { width: 100%; max-height: 200px; object-fit: cover; }
+    .embed-info { padding: 10px; }
+    .embed-title { font-size: 14px; font-weight: 500; margin-bottom: 5px; }
+    .embed-description { font-size: 12px; color: #ddd; }
+    .embed-source { font-size: 10px; color: #999; margin-top: 5px; }
+    .chat-input-area { padding: 15px; border-top: 1px solid #333; }
+    .chat-input-container { display: flex; align-items: center; gap: 10px; background: #2a2a2a; border-radius: 20px; padding: 5px 15px; }
+    .chat-input-container input { flex: 1; background: none; border: none; color: #eee; padding: 8px 0; outline: none; }
+    .chat-input-container .icon { cursor: pointer; color: #ccc; padding: 5px; }
+    .chat-input-container .send-icon { color: #ff6b6b; }
+    .emoji-panel { position: absolute; bottom: 70px; right: 20px; background: #333; border-radius: 8px; width: 250px; height: 200px; display: none; }
+    .notification { position: fixed; top: 20px; right: 20px; background: rgba(255, 107, 107, 0.9); padding: 10px 20px; border-radius: 5px; transform: translateX(200%); transition: transform 0.5s; }
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-content { display: none; position: absolute; right: 0; background: #222; border-radius: 5px; min-width: 150px; z-index: 1; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    .dropdown-content a { padding: 10px 15px; display: block; color: #eee; text-decoration: none; }
+    .dropdown-content a:hover { background: #333; }
+    .dropdown:hover .dropdown-content { display: block; }
+    .regional-badge { background: #ff6b6b; color: white; font-size: 10px; padding: 2px 6px; border-radius: 10px; margin-left: 5px; }
+    
+    @media (max-width: 768px) { 
+      .main-content { flex-direction: column; }
+      .sidebar { width: 100%; margin-bottom: 20px; }
+      .menu-items { display: flex; overflow-x: auto; }
+      .menu-item { flex: 0 0 auto; margin-right: 10px; }
+      .chat-container { flex-direction: column; height: auto; }
+      .contacts-list { width: 100%; height: 300px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header>
+      <div class="logo">Otaku Taiyo</div>
+      <div class="search">
+        <input type="text" placeholder="Search anime, manga or users...">
+      </div>
+      <div class="user-nav">
+        <div class="dropdown">
+          <span class="icon">⋯</span>
+          <div class="dropdown-content">
+            <a href="#">Settings</a>
+            <a href="#">Help Center</a>
+            <a href="#">Subscription</a>
+            <a href="#">Log Out</a>
+          </div>
+        </div>
+        <div class="icon">🔔</div>
+        <div class="icon">👤</div>
+      </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="menu-items">
+          <div class="menu-item"><i>🏠</i> Home</div>
+          <div class="menu-item"><i>📺</i> Anime</div>
+          <div class="menu-item"><i>📚</i> Manga</div>
+          <div class="menu-item"><i>🎵</i> Music</div>
+          <div class="menu-item active"><i>💬</i> Chat</div>
+          <div class="menu-item"><i>❤️</i> Favorites</div>
+          <div class="menu-item"><i>⏱️</i> History</div>
+          <div class="menu-item"><i>⚙️</i> Settings</div>
+        </div>
+      </div>
+
+      <!-- Chat Container -->
+      <div class="chat-container">
+        <!-- Contacts List -->
+        <div class="contacts-list">
+          <div class="contact-search">
+            <input type="text" placeholder="Search contacts...">
+          </div>
+          <div class="contacts-header">
+            <h3>Messages</h3>
+            <span class="contacts-options">+</span>
+          </div>
+          <div class="contact-filters">
+            <div class="filter-button active">All</div>
+            <div class="filter-button">Regional</div>
+            <div class="filter-button">Global</div>
+            <div class="filter-button">Groups</div>
+          </div>
+          
+          <div class="contact-item active">
+            <img class="contact-avatar" src="/api/placeholder/45/45" alt="User Avatar">
+            <div class="contact-info">
+              <div class="contact-name">
+                <span>AnimeFan01 <span class="regional-badge">🇯🇵</span></span>
+                <span class="contact-time">12:30</span>
+              </div>
+              <div class="contact-last-msg">What do you think about the latest episode?</div>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <img class="contact-avatar" src="/api/placeholder/45/45" alt="User Avatar">
+            <div class="contact-info">
+              <div class="contact-name">
+                <span>MangaLover <span class="regional-badge">🇺🇸</span></span>
+                <span class="contact-time">10:45</span>
+              </div>
+              <div class="contact-last-msg">Have you read the new chapter yet?</div>
+            </div>
+            <div class="contact-badge">2</div>
+          </div>
+          
+          <div class="contact-item">
+            <img class="contact-avatar" src="/api/placeholder/45/45" alt="User Avatar">
+            <div class="contact-info">
+              <div class="contact-name">
+                <span>OtakuGirl <span class="regional-badge">🇬🇧</span></span>
+                <span class="contact-time">Yesterday</span>
+              </div>
+              <div class="contact-last-msg">That anime recommendation was amazing!</div>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <img class="contact-avatar" src="/api/placeholder/45/45" alt="User Avatar">
+            <div class="contact-info">
+              <div class="contact-name">
+                <span>NarutoUzumaki</span>
+                <span class="contact-time">Tuesday</span>
+              </div>
+              <div class="contact-last-msg">Believe it! I'll become Hokage someday!</div>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <img class="contact-avatar" src="/api/placeholder/45/45" alt="User Avatar">
+            <div class="contact-info">
+              <div class="contact-name">
+                <span>SasukeUchiha</span>
+                <span class="contact-time">Monday</span>
+              </div>
+              <div class="contact-last-msg">I need to restore my clan...</div>
+            </div>
+          </div>
+          
+          <div class="contact-item">
+            <img class="contact-avatar" src="/api/placeholder/45/45" alt="User Avatar">
+            <div class="contact-info">
+              <div class="contact-name">
+                <span>Anime Enthusiasts <span class="regional-badge">Group</span></span>
+                <span class="contact-time">Sunday</span>
+              </div>
+              <div class="contact-last-msg">LuffyD: One Piece is the best anime ever!</div>
+            </div>
+            <div class="contact-badge">5</div>
+          </div>
+          
+          <div class="contact-item">
+            <img class="contact-avatar" src="/api/placeholder/45/45" alt="User Avatar">
+            <div class="contact-info">
+              <div class="contact-name">
+                <span>ZoroSan <span class="regional-badge">🇯🇵</span></span>
+                <span class="contact-time">Last week</span>
+              </div>
+              <div class="contact-last-msg">I think I'm lost again...</div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Chat Area -->
+        <div class="chat-area">
+          <div class="chat-header">
+            <div class="chat-user">
+              <img src="/api/placeholder/40/40" alt="User Avatar">
+              <div class="chat-user-info">
+                <h4>AnimeFan01 <span class="regional-badge">🇯🇵</span></h4>
+                <p>Online</p>
+              </div>
+            </div>
+            <div class="chat-actions">
+              <span class="icon">📞</span>
+              <span class="icon">🎥</span>
+              <span class="icon">ℹ️</span>
+            </div>
+          </div>
+          
+          <div class="chat-messages">
+            <div class="message received">
+              <div class="message-text">Hey there! Have you seen the latest episode of Demon Slayer?</div>
+              <div class="message-time">12:15</div>
+            </div>
+            
+            <div class="message sent">
+              <div class="message-text">Yes! It was amazing! The animation quality is unreal.</div>
+              <div class="message-time">12:20</div>
+            </div>
+            
+            <div class="message received">
+              <div class="message-text">Right? I especially loved the fight scenes. Ufotable is just on another level!</div>
+              <div class="message-time">12:22</div>
+            </div>
+            
+            <div class="message sent">
+              <div class="message-text">Absolutely! Did you also catch the Easter egg referring to the manga?</div>
+              <div class="message-time">12:25</div>
+            </div>
+            
+            <div class="message received">
+              <div class="message-text">No, I missed it! What was it?</div>
+              <div class="message-time">12:26</div>
+            </div>
+            
+            <div class="message sent">
+              <div class="message-text">Check out this scene:</div>
+              <div class="embed-content">
+                <img src="/api/placeholder/400/200" alt="Anime Scene">
+                <div class="embed-info">
+                  <div class="embed-title">Demon Slayer S3E5 - Hidden Detail</div>
+                  <div class="embed-description">Notice the symbol on the wall matches the one from chapter 145 of the manga!</div>
+                  <div class="embed-source">animeworld.com</div>
+                </div>
+              </div>
+              <div class="message-time">12:30</div>
+            </div>
+            
+            <div class="message received">
+              <div class="message-text">Wow! I completely missed that. You have a good eye!</div>
+              <div class="message-time">12:30</div>
+            </div>
+          </div>
+          
+          <div class="chat-input-area">
+            <div class="chat-input-container">
+              <span class="icon">➕</span>
+              <span class="icon">😊</span>
+              <input type="text" placeholder="Type a message...">
+              <span class="icon">🎙️</span>
+              <span class="icon send-icon">📤</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notification" id="notification">New message received!</div>
+  <div class="emoji-panel" id="emoji-panel"></div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Menu item click handler
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          showNotification(item.textContent.trim() + ' section selected');
+        });
+      });
+
+      // Contact item click handler
+      document.querySelectorAll('.contact-item').forEach(contact => {
+        contact.addEventListener('click', () => {
+          document.querySelectorAll('.contact-item').forEach(c => c.classList.remove('active'));
+          contact.classList.add('active');
+          const contactName = contact.querySelector('.contact-name span').textContent.trim().split(' ')[0];
+          showNotification('Chatting with ' + contactName);
+          
+          // Remove notification badge when selecting a contact
+          const badge = contact.querySelector('.contact-badge');
+          if (badge) {
+            badge.style.display = 'none';
+          }
+        });
+      });
+
+      // Filter buttons click handler
+      document.querySelectorAll('.filter-button').forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.filter-button').forEach(b => b.classList.remove('active'));
+          button.classList.add('active');
+          showNotification(button.textContent.trim() + ' contacts filter applied');
+        });
+      });
+
+      // Emoji panel toggle
+      document.querySelector('.icon:nth-child(2)').addEventListener('click', () => {
+        const emojiPanel = document.getElementById('emoji-panel');
+        emojiPanel.style.display = emojiPanel.style.display === 'block' ? 'none' : 'block';
+      });
+
+      // Message send handler
+      const messageInput = document.querySelector('.chat-input-container input');
+      const sendButton = document.querySelector('.send-icon');
+      
+      const sendMessage = () => {
+        const messageText = messageInput.value.trim();
+        if (messageText) {
+          const messagesContainer = document.querySelector('.chat-messages');
+          
+          const messageElement = document.createElement('div');
+          messageElement.className = 'message sent';
+          
+          const textElement = document.createElement('div');
+          textElement.className = 'message-text';
+          textElement.textContent = messageText;
+          
+          const timeElement = document.createElement('div');
+          timeElement.className = 'message-time';
+          
+          // Get current time
+          const now = new Date();
+          const hours = now.getHours().toString().padStart(2, '0');
+          const minutes = now.getMinutes().toString().padStart(2, '0');
+          timeElement.textContent = `${hours}:${minutes}`;
+          
+          messageElement.appendChild(textElement);
+          messageElement.appendChild(timeElement);
+          messagesContainer.appendChild(messageElement);
+          
+          // Scroll to bottom
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          
+          // Clear input
+          messageInput.value = '';
+          
+          // Simulate reply after delay
+          setTimeout(() => {
+            const replyElement = document.createElement('div');
+            replyElement.className = 'message received';
+            
+            const replyTextElement = document.createElement('div');
+            replyTextElement.className = 'message-text';
+            replyTextElement.textContent = 'Thanks for your message! I'll respond soon.';
+            
+            const replyTimeElement = document.createElement('div');
+            replyTimeElement.className = 'message-time';
+            const replyTime = new Date();
+            replyTimeElement.textContent = `${replyTime.getHours().toString().padStart(2, '0')}:${replyTime.getMinutes().toString().padStart(2, '0')}`;
+            
+            replyElement.appendChild(replyTextElement);
+            replyElement.appendChild(replyTimeElement);
+            messagesContainer.appendChild(replyElement);
+            
+            // Scroll to bottom again
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            
+            // Show notification
+            showNotification('New message from AnimeFan01');
+          }, 1500);
+        }
+      };
+      
+      sendButton.addEventListener('click', sendMessage);
+      
+      messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          sendMessage();
+        }
+      });
+
+      // Chat actions button handlers
+      document.querySelectorAll('.chat-actions .icon').forEach(icon => {
+        icon.addEventListener('click', () => {
+          const action = icon.textContent === '📞' ? 'Voice call' :
+                         icon.textContent === '🎥' ? 'Video call' : 'Info';
+          showNotification(action + ' with AnimeFan01');
+        });
+      });
+
+      // Show notification function
+      function showNotification(message) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.style.transform = 'translateX(0)';
+        setTimeout(() => {
+          notification.style.transform = 'translateX(200%)';
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>

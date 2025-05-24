@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Otaku Taiyo - Login/Signup</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #121212; color: #eee; display: flex; justify-content: center; align-items: center; height: 100vh; background-image: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('/api/placeholder/1920/1080'); background-size: cover; background-position: center; }
+    .container { width: 100%; max-width: 400px; background: rgba(34, 34, 34, 0.9); border-radius: 10px; padding: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+    .logo { font-size: 28px; font-weight: bold; color: #ff6b6b; text-align: center; margin-bottom: 20px; }
+    .form-container { position: relative; }
+    .tab-header { display: flex; margin-bottom: 20px; border-bottom: 1px solid #333; }
+    .tab { flex: 1; text-align: center; padding: 12px 0; cursor: pointer; transition: all 0.3s; font-weight: bold; color: #999; }
+    .tab.active { color: #ff6b6b; border-bottom: 2px solid #ff6b6b; }
+    .form { display: none; }
+    .form.active { display: block; }
+    .input-group { margin-bottom: 15px; }
+    .input-group label { display: block; margin-bottom: 5px; color: #ccc; font-size: 14px; }
+    .input-group input { width: 100%; padding: 12px 15px; border-radius: 5px; border: 1px solid #333; background: #222; color: #eee; font-size: 16px; transition: all 0.3s; }
+    .input-group input:focus { outline: none; border-color: #ff6b6b; }
+    .remember { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; font-size: 14px; color: #999; }
+    .remember label { display: flex; align-items: center; cursor: pointer; }
+    .remember input { margin-right: 5px; cursor: pointer; }
+    .forgot { color: #ff6b6b; text-decoration: none; }
+    .button { width: 100%; padding: 12px 0; background: #ff6b6b; color: #fff; border: none; border-radius: 5px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s; }
+    .button:hover { background: #ff5252; }
+    .social-login { margin-top: 20px; text-align: center; }
+    .social-login p { margin-bottom: 15px; color: #999; position: relative; }
+    .social-login p::before, .social-login p::after { content: ""; position: absolute; top: 50%; width: 35%; height: 1px; background: #333; }
+    .social-login p::before { left: 0; }
+    .social-login p::after { right: 0; }
+    .social-icons { display: flex; justify-content: center; gap: 15px; }
+    .social-icon { width: 40px; height: 40px; border-radius: 50%; background: #333; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: all 0.3s; }
+    .social-icon:hover { background: #444; }
+    .signup-text { text-align: center; margin-top: 20px; font-size: 14px; color: #999; }
+    .signup-text a { color: #ff6b6b; text-decoration: none; }
+    .dropdown { position: absolute; top: 10px; right: 10px; }
+    .dropdown-btn { background: none; border: none; color: #ccc; font-size: 20px; cursor: pointer; }
+    .dropdown-content { display: none; position: absolute; right: 0; background: #222; min-width: 120px; border-radius: 5px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); z-index: 1; }
+    .dropdown-content a { display: block; padding: 8px 12px; color: #eee; text-decoration: none; font-size: 14px; }
+    .dropdown-content a:hover { background: #333; }
+    .dropdown.active .dropdown-content { display: block; }
+    .list-option { margin-top: 20px; }
+    .list-option h4 { margin-bottom: 10px; color: #ccc; font-size: 14px; }
+    .list-option ul { list-style: none; }
+    .list-option li { padding: 8px 0; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+    .list-option li:last-child { border-bottom: none; }
+    .list-option .toggle { width: 36px; height: 20px; background: #333; border-radius: 10px; position: relative; cursor: pointer; }
+    .list-option .toggle::before { content: ""; position: absolute; width: 16px; height: 16px; background: #ccc; border-radius: 50%; top: 2px; left: 2px; transition: all 0.3s; }
+    .list-option .toggle.active { background: #ff6b6b; }
+    .list-option .toggle.active::before { left: 18px; background: #fff; }
+    .notification { position: fixed; top: 20px; right: 20px; background: rgba(255, 107, 107, 0.9); padding: 10px 20px; border-radius: 5px; transform: translateX(200%); transition: transform 0.5s; }
+    @media (max-width: 480px) {
+      .container { width: 90%; padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="dropdown">
+      <button class="dropdown-btn">⋯</button>
+      <div class="dropdown-content">
+        <a href="#">Language</a>
+        <a href="#">Help</a>
+        <a href="#">About</a>
+      </div>
+    </div>
+    <div class="logo">Otaku Taiyo</div>
+    
+    <div class="form-container">
+      <div class="tab-header">
+        <div class="tab active" data-tab="login">Login</div>
+        <div class="tab" data-tab="signup">Sign Up</div>
+      </div>
+      
+      <!-- Login Form -->
+      <div class="form active" id="login">
+        <div class="input-group">
+          <label for="login-email">Email or Username</label>
+          <input type="text" id="login-email" placeholder="Enter your email or username">
+        </div>
+        <div class="input-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="Enter your password">
+        </div>
+        <div class="remember">
+          <label><input type="checkbox"> Remember me</label>
+          <a href="#" class="forgot">Forgot Password?</a>
+        </div>
+        <button class="button">Login</button>
+        
+        <div class="social-login">
+          <p>Or login with</p>
+          <div class="social-icons">
+            <div class="social-icon">G</div>
+            <div class="social-icon">f</div>
+            <div class="social-icon">in</div>
+          </div>
+        </div>
+        
+        <div class="list-option">
+          <h4>Quick Options</h4>
+          <ul>
+            <li>
+              <span>Stay signed in</span>
+              <div class="toggle"></div>
+            </li>
+            <li>
+              <span>Use biometric login</span>
+              <div class="toggle"></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Sign Up Form -->
+      <div class="form" id="signup">
+        <div class="input-group">
+          <label for="signup-username">Username</label>
+          <input type="text" id="signup-username" placeholder="Choose a username">
+        </div>
+        <div class="input-group">
+          <label for="signup-email">Email</label>
+          <input type="email" id="signup-email" placeholder="Enter your email">
+        </div>
+        <div class="input-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" placeholder="Create a password">
+        </div>
+        <div class="input-group">
+          <label for="signup-confirm">Confirm Password</label>
+          <input type="password" id="signup-confirm" placeholder="Confirm your password">
+        </div>
+        <div class="remember">
+          <label><input type="checkbox"> I agree to the Terms & Privacy Policy</label>
+        </div>
+        <button class="button">Sign Up</button>
+        
+        <div class="social-login">
+          <p>Or sign up with</p>
+          <div class="social-icons">
+            <div class="social-icon">G</div>
+            <div class="social-icon">f</div>
+            <div class="social-icon">in</div>
+          </div>
+        </div>
+        
+        <div class="list-option">
+          <h4>Preferences</h4>
+          <ul>
+            <li>
+              <span>Receive notifications</span>
+              <div class="toggle active"></div>
+            </li>
+            <li>
+              <span>Allow embedding</span>
+              <div class="toggle active"></div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notification" id="notification">Successfully logged in!</div>
+
+  <script>
+    // Compact JavaScript for functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      // Tab switching
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabId = tab.getAttribute('data-tab');
+          
+          // Update active tab
+          document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          
+          // Show corresponding form
+          document.querySelectorAll('.form').forEach(form => form.classList.remove('active'));
+          document.getElementById(tabId).classList.add('active');
+        });
+      });
+      
+      // Toggle dropdown
+      const dropdownBtn = document.querySelector('.dropdown-btn');
+      dropdownBtn.addEventListener('click', () => {
+        document.querySelector('.dropdown').classList.toggle('active');
+      });
+      
+      // Close dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!e.target.matches('.dropdown-btn') && !e.target.matches('.dropdown-content *')) {
+          document.querySelector('.dropdown').classList.remove('active');
+        }
+      });
+      
+      // Toggle switches
+      document.querySelectorAll('.toggle').forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          toggle.classList.toggle('active');
+        });
+      });
+      
+      // Login and signup functionality using localStorage for local authentication
+      // Login button
+      document.querySelector('#login .button').addEventListener('click', () => {
+        const email = document.getElementById('login-email').value.trim();
+        const password = document.getElementById('login-password').value.trim();
+        
+        // Simple validation
+        if(!email || !password) {
+          showNotification('Please enter both email/username and password');
+          return;
+        }
+        
+        // Check if user exists in localStorage
+        const users = JSON.parse(localStorage.getItem('otakuTaiyoUsers') || '[]');
+        const user = users.find(u => (u.email === email || u.username === email) && u.password === password);
+        
+        if(user) {
+          // Set current user
+          localStorage.setItem('otakuTaiyoCurrentUser', JSON.stringify(user));
+          showNotification('Successfully logged in!');
+          setTimeout(() => {
+            window.location.href = 'dashboard.html';
+          }, 2000);
+        } else {
+          showNotification('Invalid email/username or password');
+        }
+      });
+      
+      // Signup button
+      document.querySelector('#signup .button').addEventListener('click', () => {
+        const username = document.getElementById('signup-username').value.trim();
+        const email = document.getElementById('signup-email').value.trim();
+        const password = document.getElementById('signup-password').value.trim();
+        const confirm = document.getElementById('signup-confirm').value.trim();
+        
+        // Simple validation
+        if(!username || !email || !password || !confirm) {
+          showNotification('Please fill in all fields');
+          return;
+        }
+        
+        if(password !== confirm) {
+          showNotification('Passwords do not match');
+          return;
+        }
+        
+        if(password.length < 6) {
+          showNotification('Password must be at least 6 characters');
+          return;
+        }
+        
+        // Check if user already exists
+        const users = JSON.parse(localStorage.getItem('otakuTaiyoUsers') || '[]');
+        if(users.some(u => u.email === email)) {
+          showNotification('Email already registered');
+          return;
+        }
+        
+        if(users.some(u => u.username === username)) {
+          showNotification('Username already taken');
+          return;
+        }
+        
+        // Add new user
+        const newUser = { username, email, password };
+        users.push(newUser);
+        localStorage.setItem('otakuTaiyoUsers', JSON.stringify(users));
+        
+        // Success notification
+        showNotification('Account created successfully!');
+        setTimeout(() => {
+          document.querySelectorAll('.tab')[0].click();
+        }, 2000);
+      });
+      
+      // Notification function
+      function showNotification(message) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.style.transform = 'translateX(0)';
+        setTimeout(() => {
+          notification.style.transform = 'translateX(200%)';
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>

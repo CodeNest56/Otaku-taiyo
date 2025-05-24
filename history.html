@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Otaku Taiyo - History</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background: #121212; color: #eee; }
+    .container { max-width: 1200px; margin: 0 auto; padding: 15px; }
+    header { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #333; }
+    .logo { font-size: 24px; font-weight: bold; color: #ff6b6b; }
+    .search { position: relative; width: 40%; }
+    .search input { width: 100%; padding: 8px 15px; border-radius: 20px; border: none; background: #222; color: #eee; }
+    .user-nav { display: flex; align-items: center; gap: 15px; }
+    .user-nav .icon { font-size: 20px; cursor: pointer; color: #ccc; }
+    .main-content { display: flex; margin-top: 20px; }
+    .sidebar { width: 200px; padding-right: 15px; }
+    .menu-item { padding: 12px 10px; margin-bottom: 8px; cursor: pointer; border-radius: 5px; transition: all 0.3s; }
+    .menu-item:hover { background: #222; }
+    .menu-item.active { background: #ff6b6b; color: #fff; }
+    .menu-item i { margin-right: 10px; }
+    .content { flex: 1; }
+    .section-title { margin: 15px 0; padding-bottom: 10px; border-bottom: 1px solid #333; display: flex; justify-content: space-between; align-items: center; }
+    .section-title h2 { font-size: 18px; }
+    .section-title .more { cursor: pointer; color: #ff6b6b; }
+    .history-filters { display: flex; gap: 10px; margin-bottom: 15px; }
+    .filter-btn { padding: 5px 12px; background: #222; border: none; color: #ccc; border-radius: 15px; cursor: pointer; font-size: 12px; }
+    .filter-btn.active { background: #ff6b6b; color: #fff; }
+    .history-list { background: #222; border-radius: 8px; overflow: hidden; }
+    .history-item { display: flex; padding: 12px; border-bottom: 1px solid #333; transition: background 0.3s; cursor: pointer; }
+    .history-item:hover { background: #2a2a2a; }
+    .history-item:last-child { border-bottom: none; }
+    .history-thumbnail { width: 100px; height: 60px; object-fit: cover; border-radius: 4px; }
+    .history-info { flex: 1; padding-left: 15px; display: flex; flex-direction: column; justify-content: space-between; }
+    .history-title { font-size: 14px; margin-bottom: 5px; }
+    .history-meta { display: flex; justify-content: space-between; font-size: 12px; color: #999; }
+    .history-actions { display: flex; align-items: center; gap: 10px; }
+    .history-action { cursor: pointer; color: #ccc; font-size: 14px; }
+    .history-action:hover { color: #ff6b6b; }
+    .clear-history { background: #ff6b6b; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-size: 14px; margin-top: 15px; }
+    .no-history { padding: 30px; text-align: center; color: #999; }
+    .time-period { margin-top: 15px; margin-bottom: 10px; font-size: 14px; color: #ccc; font-weight: bold; }
+    .dropdown { position: relative; display: inline-block; }
+    .dropdown-content { display: none; position: absolute; right: 0; background: #222; border-radius: 5px; min-width: 150px; z-index: 1; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+    .dropdown-content a { padding: 10px 15px; display: block; color: #eee; text-decoration: none; }
+    .dropdown-content a:hover { background: #333; }
+    .dropdown:hover .dropdown-content { display: block; }
+    .notification { position: fixed; top: 20px; right: 20px; background: rgba(255, 107, 107, 0.9); padding: 10px 20px; border-radius: 5px; transform: translateX(200%); transition: transform 0.5s; }
+    @media (max-width: 768px) { 
+      .search { width: 60%; }
+      .main-content { flex-direction: column; }
+      .sidebar { width: 100%; margin-bottom: 20px; }
+      .menu-items { display: flex; overflow-x: auto; }
+      .menu-item { flex: 0 0 auto; margin-right: 10px; }
+      .history-thumbnail { width: 80px; height: 50px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header>
+      <div class="logo">Otaku Taiyo</div>
+      <div class="search">
+        <input type="text" placeholder="Search anime, manga or users...">
+      </div>
+      <div class="user-nav">
+        <div class="dropdown">
+          <span class="icon">⋯</span>
+          <div class="dropdown-content">
+            <a href="#">Settings</a>
+            <a href="#">Help Center</a>
+            <a href="#">Subscription</a>
+            <a href="#">Log Out</a>
+          </div>
+        </div>
+        <div class="icon">🔔</div>
+        <div class="icon">👤</div>
+      </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="menu-items">
+          <div class="menu-item"><i>🏠</i> Home</div>
+          <div class="menu-item"><i>📺</i> Anime</div>
+          <div class="menu-item"><i>📚</i> Manga</div>
+          <div class="menu-item"><i>🎵</i> Music</div>
+          <div class="menu-item"><i>💬</i> Chat</div>
+          <div class="menu-item"><i>❤️</i> Favorites</div>
+          <div class="menu-item active"><i>⏱️</i> History</div>
+          <div class="menu-item"><i>⚙️</i> Settings</div>
+        </div>
+      </div>
+
+      <!-- Content Area -->
+      <div class="content">
+        <!-- History Section Title -->
+        <div class="section-title">
+          <h2>Watch History</h2>
+          <button class="clear-history">Clear All</button>
+        </div>
+
+        <!-- History Filters -->
+        <div class="history-filters">
+          <button class="filter-btn active">All</button>
+          <button class="filter-btn">Anime</button>
+          <button class="filter-btn">Manga</button>
+          <button class="filter-btn">Music</button>
+        </div>
+
+        <!-- Today's History -->
+        <div class="time-period">Today</div>
+        <div class="history-list">
+          <div class="history-item">
+            <img src="/api/placeholder/100/60" alt="Demon Slayer" class="history-thumbnail">
+            <div class="history-info">
+              <div class="history-title">Demon Slayer S2E05 - The Battle Continues</div>
+              <div class="history-meta">
+                <span>Watched: 2 hours ago</span>
+                <span>16:42 / 24:15</span>
+              </div>
+            </div>
+            <div class="history-actions">
+              <div class="history-action">▶️</div>
+              <div class="history-action">❌</div>
+            </div>
+          </div>
+          <div class="history-item">
+            <img src="/api/placeholder/100/60" alt="Chainsaw Man" class="history-thumbnail">
+            <div class="history-info">
+              <div class="history-title">Chainsaw Man Chapter 121</div>
+              <div class="history-meta">
+                <span>Read: 4 hours ago</span>
+                <span>Manga</span>
+              </div>
+            </div>
+            <div class="history-actions">
+              <div class="history-action">📖</div>
+              <div class="history-action">❌</div>
+            </div>
+          </div>
+          <div class="history-item">
+            <img src="/api/placeholder/100/60" alt="Blue Bird" class="history-thumbnail">
+            <div class="history-info">
+              <div class="history-title">Blue Bird - Naruto Shippuden OP</div>
+              <div class="history-meta">
+                <span>Listened: 5 hours ago</span>
+                <span>3:45</span>
+              </div>
+            </div>
+            <div class="history-actions">
+              <div class="history-action">🎵</div>
+              <div class="history-action">❌</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Yesterday History -->
+        <div class="time-period">Yesterday</div>
+        <div class="history-list">
+          <div class="history-item">
+            <img src="/api/placeholder/100/60" alt="One Piece" class="history-thumbnail">
+            <div class="history-info">
+              <div class="history-title">One Piece Episode 1015 - Straw Hats Reunite</div>
+              <div class="history-meta">
+                <span>Watched: Yesterday</span>
+                <span>Completed</span>
+              </div>
+            </div>
+            <div class="history-actions">
+              <div class="history-action">▶️</div>
+              <div class="history-action">❌</div>
+            </div>
+          </div>
+          <div class="history-item">
+            <img src="/api/placeholder/100/60" alt="Jujutsu Kaisen" class="history-thumbnail">
+            <div class="history-info">
+              <div class="history-title">Jujutsu Kaisen S2E10 - Shibuya Incident</div>
+              <div class="history-meta">
+                <span>Watched: Yesterday</span>
+                <span>Completed</span>
+              </div>
+            </div>
+            <div class="history-actions">
+              <div class="history-action">▶️</div>
+              <div class="history-action">❌</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Last Week History -->
+        <div class="time-period">Last Week</div>
+        <div class="history-list">
+          <div class="history-item">
+            <img src="/api/placeholder/100/60" alt="Attack on Titan" class="history-thumbnail">
+            <div class="history-info">
+              <div class="history-title">Attack on Titan Final Season P2E12</div>
+              <div class="history-meta">
+                <span>Watched: 5 days ago</span>
+                <span>Completed</span>
+              </div>
+            </div>
+            <div class="history-actions">
+              <div class="history-action">▶️</div>
+              <div class="history-action">❌</div>
+            </div>
+          </div>
+          <div class="history-item">
+            <img src="/api/placeholder/100/60" alt="Berserk" class="history-thumbnail">
+            <div class="history-info">
+              <div class="history-title">Berserk Chapter 364</div>
+              <div class="history-meta">
+                <span>Read: 6 days ago</span>
+                <span>Manga</span>
+              </div>
+            </div>
+            <div class="history-actions">
+              <div class="history-action">📖</div>
+              <div class="history-action">❌</div>
+            </div>
+          </div>
+          <div class="history-item">
+            <img src="/api/placeholder/100/60" alt="Gurenge" class="history-thumbnail">
+            <div class="history-info">
+              <div class="history-title">Gurenge - Demon Slayer OP</div>
+              <div class="history-meta">
+                <span>Listened: 7 days ago</span>
+                <span>4:15</span>
+              </div>
+            </div>
+            <div class="history-actions">
+              <div class="history-action">🎵</div>
+              <div class="history-action">❌</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notification" id="notification">Item selected!</div>
+
+  <script>
+    // Minimal JavaScript for functionality
+    document.addEventListener('DOMContentLoaded', () => {
+      // Menu item click handler
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          showNotification(item.textContent.trim() + ' section selected');
+        });
+      });
+
+      // Filter button click handler
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          showNotification('Filter: ' + btn.textContent.trim());
+        });
+      });
+
+      // History item click handler
+      document.querySelectorAll('.history-item').forEach(item => {
+        item.addEventListener('click', () => {
+          const title = item.querySelector('.history-title').textContent;
+          showNotification('Resuming: ' + title);
+        });
+      });
+
+      // History action click handler
+      document.querySelectorAll('.history-action').forEach(action => {
+        action.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const title = e.target.closest('.history-item').querySelector('.history-title').textContent;
+          const actionType = e.target.textContent;
+          
+          if (actionType === '❌') {
+            showNotification('Removed from history: ' + title);
+          } else if (actionType === '▶️') {
+            showNotification('Playing: ' + title);
+          } else if (actionType === '📖') {
+            showNotification('Reading: ' + title);
+          } else if (actionType === '🎵') {
+            showNotification('Playing music: ' + title);
+          }
+        });
+      });
+
+      // Clear history button
+      document.querySelector('.clear-history').addEventListener('click', () => {
+        showNotification('History cleared');
+      });
+
+      // Show notification function
+      function showNotification(message) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.style.transform = 'translateX(0)';
+        setTimeout(() => {
+          notification.style.transform = 'translateX(200%)';
+        }, 3000);
+      }
+
+      // Embed functionality example (placeholder)
+      const embedFromExternalSites = {
+        embedVideo: function(videoId, source) {
+          // This is where you would implement embedding from external sites
+          console.log(`Embedding video ${videoId} from ${source}`);
+          return `<iframe src="about:blank" width="100%" height="100%" frameborder="0"></iframe>`;
+        }
+      };
+    });
+  </script>
+</body>
+</html>

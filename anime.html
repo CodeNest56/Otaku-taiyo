@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Otaku Taiyo - Anime</title>
+  <style>*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif}body{background:#121212;color:#eee}.container{max-width:1200px;margin:0 auto;padding:15px}header{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #333}.logo{font-size:24px;font-weight:bold;color:#ff6b6b}.search{position:relative;width:40%}.search input{width:100%;padding:8px 15px;border-radius:20px;border:none;background:#222;color:#eee}.user-nav{display:flex;align-items:center;gap:15px}.user-nav .icon{font-size:20px;cursor:pointer;color:#ccc}.main-content{display:flex;margin-top:20px}.sidebar{width:200px;padding-right:15px}.menu-item{padding:12px 10px;margin-bottom:8px;cursor:pointer;border-radius:5px;transition:all 0.3s}.menu-item:hover{background:#222}.menu-item.active{background:#ff6b6b;color:#fff}.menu-item i{margin-right:10px}.content{flex:1}.section-title{margin:15px 0;padding-bottom:10px;border-bottom:1px solid #333;display:flex;justify-content:space-between;align-items:center}.section-title h2{font-size:18px}.section-title .more{cursor:pointer;color:#ff6b6b}.content-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:15px}.content-card{background:#222;border-radius:8px;overflow:hidden;transition:transform 0.3s;cursor:pointer}.content-card:hover{transform:translateY(-5px)}.content-card img{width:100%;height:150px;object-fit:cover}.content-card .info{padding:10px}.content-card .title{font-size:14px;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.content-card .meta{font-size:12px;color:#999;display:flex;justify-content:space-between}.embed-container{background:#222;border-radius:8px;padding:15px;margin:20px 0;height:400px}.notification{position:fixed;top:20px;right:20px;background:rgba(255,107,107,0.9);padding:10px 20px;border-radius:5px;transform:translateX(200%);transition:transform 0.5s}.dropdown{position:relative;display:inline-block}.dropdown-content{display:none;position:absolute;right:0;background:#222;border-radius:5px;min-width:150px;z-index:1;box-shadow:0 2px 10px rgba(0,0,0,0.3)}.dropdown-content a{padding:10px 15px;display:block;color:#eee;text-decoration:none}.dropdown-content a:hover{background:#333}.dropdown:hover .dropdown-content{display:block}@media (max-width:768px){.search{width:60%}.main-content{flex-direction:column}.sidebar{width:100%;margin-bottom:20px}.menu-items{display:flex;overflow-x:auto}.menu-item{flex:0 0 auto;margin-right:10px}}</style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <header>
+      <div class="logo">Otaku Taiyo</div>
+      <div class="search">
+        <input type="text" placeholder="Search anime...">
+      </div>
+      <div class="user-nav">
+        <div class="dropdown">
+          <span class="icon">⋯</span>
+          <div class="dropdown-content">
+            <a href="#">Settings</a>
+            <a href="#">Help Center</a>
+            <a href="#">Subscription</a>
+            <a href="#">Log Out</a>
+          </div>
+        </div>
+        <div class="icon">🔔</div>
+        <div class="icon">👤</div>
+      </div>
+    </header>
+
+    <!-- Main Content Section -->
+    <div class="main-content">
+      <!-- Sidebar -->
+      <div class="sidebar">
+        <div class="menu-items">
+          <div class="menu-item"><i>🏠</i> Home</div>
+          <div class="menu-item active"><i>📺</i> Anime</div>
+          <div class="menu-item"><i>📚</i> Manga</div>
+          <div class="menu-item"><i>🎵</i> Music</div>
+          <div class="menu-item"><i>💬</i> Chat</div>
+          <div class="menu-item"><i>❤️</i> Favorites</div>
+          <div class="menu-item"><i>⏱️</i> History</div>
+          <div class="menu-item"><i>⚙️</i> Settings</div>
+        </div>
+      </div>
+
+      <!-- Content Area -->
+      <div class="content">
+        <!-- Featured Embed Section -->
+        <div class="section-title">
+          <h2>Featured Anime</h2>
+          <span class="more">⋯</span>
+        </div>
+        <div class="embed-container">
+          <iframe width="100%" height="100%" src="https://www.youtube.com/embed/dQw4w9WgXcQ" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <!-- Popular Anime Section -->
+        <div class="section-title">
+          <h2>Popular Anime</h2>
+          <span class="more">⋯</span>
+        </div>
+        <div class="content-grid">
+          <div class="content-card">
+            <img src="https://via.placeholder.com/300x200?text=Attack+on+Titan" alt="Attack on Titan">
+            <div class="info">
+              <div class="title">Attack on Titan</div>
+              <div class="meta"><span>Action</span><span>⭐ 9.0</span></div>
+            </div>
+          </div>
+          <div class="content-card">
+            <img src="https://via.placeholder.com/300x200?text=Demon+Slayer" alt="Demon Slayer">
+            <div class="info">
+              <div class="title">Demon Slayer</div>
+              <div class="meta"><span>Action</span><span>⭐ 8.9</span></div>
+            </div>
+          </div>
+          <div class="content-card">
+            <img src="https://via.placeholder.com/300x200?text=Jujutsu+Kaisen" alt="Jujutsu Kaisen">
+            <div class="info">
+              <div class="title">Jujutsu Kaisen</div>
+              <div class="meta"><span>Supernatural</span><span>⭐ 8.7</span></div>
+            </div>
+          </div>
+          <div class="content-card">
+            <img src="https://via.placeholder.com/300x200?text=One+Piece" alt="One Piece">
+            <div class="info">
+              <div class="title">One Piece</div>
+              <div class="meta"><span>Adventure</span><span>⭐ 9.2</span></div>
+            </div>
+          </div>
+          <div class="content-card">
+            <img src="https://via.placeholder.com/300x200?text=My+Hero+Academia" alt="My Hero Academia">
+            <div class="info">
+              <div class="title">My Hero Academia</div>
+              <div class="meta"><span>Superhero</span><span>⭐ 8.4</span></div>
+            </div>
+          </div>
+          <div class="content-card">
+            <img src="https://via.placeholder.com/300x200?text=Naruto" alt="Naruto">
+            <div class="info">
+              <div class="title">Naruto</div>
+              <div class="meta"><span>Action</span><span>⭐ 8.7</span></div>
+            </div>
+          </div>
+          <div class="content-card">
+            <img src="https://via.placeholder.com/300x200?text=Death+Note" alt="Death Note">
+            <div class="info">
+              <div class="title">Death Note</div>
+              <div class="meta"><span>Thriller</span><span>⭐ 8.6</span></div>
+            </div>
+          </div>
+          <div class="content-card">
+            <img src="https://via.placeholder.com/300x200?text=Tokyo+Revengers" alt="Tokyo Revengers">
+            <div class="info">
+              <div class="title">Tokyo Revengers</div>
+              <div class="meta"><span>Drama</span><span>⭐ 8.3</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Anime Genres List -->
+        <div class="section-title">
+          <h2>Browse by Genre</h2>
+          <span class="more">⋯</span>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;margin-bottom:20px">
+          <div class="menu-item" style="margin:0">Action</div>
+          <div class="menu-item" style="margin:0">Adventure</div>
+          <div class="menu-item" style="margin:0">Comedy</div>
+          <div class="menu-item" style="margin:0">Drama</div>
+          <div class="menu-item" style="margin:0">Fantasy</div>
+          <div class="menu-item" style="margin:0">Horror</div>
+          <div class="menu-item" style="margin:0">Mystery</div>
+          <div class="menu-item" style="margin:0">Romance</div>
+          <div class="menu-item" style="margin:0">Sci-Fi</div>
+          <div class="menu-item" style="margin:0">Slice of Life</div>
+          <div class="menu-item" style="margin:0">Sports</div>
+          <div class="menu-item" style="margin:0">Supernatural</div>
+        </div>
+
+        <!-- Recent Episodes Section -->
+        <div class="section-title">
+          <h2>Recent Episodes</h2>
+          <span class="more">⋯</span>
+        </div>
+        <div class="content-grid">
+          <div class="content-card">
+            <img src="https://via.placeholder.com/300x200?text=One+Piece+1071" alt="One Piece 1071">
+            <div class="info">
+              <div class="title">One Piece Ep. 1071</div>
+              <div class="meta"><span>New</span><span>1h ago</span></div>
+            </div>
+          </div>
+          <div class="content-card">
+            <img src="https://via.placeholder.com/300x200?text=Jujutsu+Kaisen+S2+Ep5" alt="Jujutsu Kaisen S2 Ep5">
+            <div class="info">
+              <div class="title">Jujutsu Kaisen S2 Ep5</div>
+              <div class="meta"><span>New</span><span>3h ago</span></div>
+            </div>
+          </div>
+          <div class="content-card">
+            <img src="https://via.placeholder.com/300x200?text=Attack+on+Titan+Final" alt="Attack on Titan Final">
+            <div class="info">
+              <div class="title">Attack on Titan Final</div>
+              <div class="meta"><span>New</span><span>1d ago</span></div>
+            </div>
+          </div>
+          <div class="content-card">
+            <img src="https://via.placeholder.com/300x200?text=My+Hero+Academia+S6" alt="My Hero Academia S6">
+            <div class="info">
+              <div class="title">My Hero Academia S6</div>
+              <div class="meta"><span>New</span><span>2d ago</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notification" id="notification">Welcome to Otaku Taiyo!</div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Menu item click handler
+      document.querySelectorAll('.menu-item').forEach(item => {
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+          item.classList.add('active');
+          showNotification(item.textContent.trim() + ' section selected');
+        });
+      });
+
+      // Content card click handler
+      document.querySelectorAll('.content-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const title = card.querySelector('.title').textContent;
+          showNotification('Selected: ' + title);
+        });
+      });
+
+      // More options click handler
+      document.querySelectorAll('.more').forEach(more => {
+        more.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const title = e.target.closest('.section-title').querySelector('h2').textContent;
+          showNotification('More options for ' + title);
+        });
+      });
+
+      // Genre click handler
+      document.querySelectorAll('.menu-item[style]').forEach(genre => {
+        genre.addEventListener('click', () => {
+          showNotification('Browsing ' + genre.textContent.trim() + ' anime');
+        });
+      });
+
+      // Search functionality
+      const searchInput = document.querySelector('.search input');
+      searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          showNotification('Searching for: ' + searchInput.value);
+        }
+      });
+
+      // Show notification function
+      function showNotification(message) {
+        const notification = document.getElementById('notification');
+        notification.textContent = message;
+        notification.style.transform = 'translateX(0)';
+        setTimeout(() => {
+          notification.style.transform = 'translateX(200%)';
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+</html>
